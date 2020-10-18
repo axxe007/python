@@ -1,49 +1,79 @@
-## question 2.8.3 from nld book.
-## one should write runge kutta method separately and then import in every code to use it.
-## this way only writing one time is enough
+# question 2.8.3 from nld book.
+# one should write runge kutta method separately and then import in every code to use it.
+# this way only writing one time is enough
 
-## in this question intial condition is x(0) = 1, therefor
-## for t = 0, we have x = 1
+# in this question intial condition is x(0) = 1, therefor
+# for t = 0, we have x = 1
 
 import matplotlib.pyplot as plt
 from math import exp
 
-def func(x,t):
+
+def func(x, t):
     return (5*t**2-x)/(exp(x+t))
 
-def rKutta_for(x,t, delta):
-    k1 = delta*func(x,t)
+
+def rKutta(x, t, delta):
+    k1 = delta*func(x, t)
     k2 = delta*func(x+(k1)/2, t + delta/2)
     k3 = delta*func(x+(1/2)*k2, t + delta/2)
     k4 = delta*func(x+k3, t + delta)
 
     return x + (k1 + 2*k2 + 2*k3 + k4)/6
 
+
+'''
+new info is that use directly negative delta
 def r_kutta_rev(x,t, delta):
     k1 = delta*func(x,t)
-    k2 = delta*func(x-(k1)/2, t - delta/2)
-    k3 = delta*func(x-(1/2)*k2, t - delta/2)
-    k4 = delta*func(x-k3, t - delta)
+    k2 = delta*func(x + (k1)/2, t + delta/2)
+    k3 = delta*func(x + (1/2)*k2, t + delta/2)
+    k4 = delta*func(x + k3, t + delta)
     
     return x + (k1 + 2*k2 + 2*k3 + k4)/6
-
+'''
 # will find the values till t = 5
 
-t_start = 0
-t_end = 5
 
-delta = 0.01
+def solve(initial_x, initial_t, final_t, delta, rev = False, verbose = False):
+    x = [initial_x]
+    t = [initial_t]
 
-x = [1]
-t = [0]
+    while initial_t < final_t:
+        new = rKutta(x[-1], initial_t, delta)
+        x.append(new)
+        t.append(initial_t+delta)
 
-while t_start < 5:
-    new = rKutta_for(x[-1],t_start,delta)
-    x.append(new)
-    t.append(t_start+delta)
-    if float(f'{t_start:.2f}')%1 == 0:
-        print(f'Solving for t = {t_start:.2f} and found value of x = {new:.3f}')
-    t_start+=delta
+        if float(f'{initial_t:.2f}') % 1 == 0:
+            print(f'Solving for t = {initial_t:.2f} and found value of x = {new:.3f}')
+        initial_t += delta
+    
+    if rev == True:
+        x_rev = [initial_x]
+        t_rev = [initial_t]
+        while initial_t > -final_t:
+            new_rev = rKutta(x[-1], initial_t, -delta)
+            x_rev.append(new_rev)
+            t_rev.append(initial_t-delta)
 
-plt.plot(t,x)
-plt.show()
+            if float(f'{initial_t:.2f}') % 1 == 0 and verbose == True:
+                print(f'Solving for t = {initial_t:.2f} and found value of x = {new:.3f}')
+            initial_t = initial_t - delta
+        
+        x.reverse()
+        x.extend(x_rev)
+        x.reverse()
+        t.reverse()
+        t.extend(t_rev)
+        t.reverse()
+    
+    return x , t
+
+
+def main():
+    x,t = solve(1,0,5,0.1,rev=True)
+    plt.scatter(t,x)
+    plt.show()
+
+if __name__ == '__main__':
+    main()
