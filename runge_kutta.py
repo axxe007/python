@@ -7,9 +7,6 @@
 
 #question changed to different equation, which was looking sexy
 '''
-Rev = True is used for plotting graph till negative final_t
-whereas final_t is value until which we want to solve using rKutta
-
 verbose = Truewill output results of each iteration with values of x
 and t at that iteration
 '''
@@ -22,7 +19,7 @@ def func(x, t):
     return (5*t**2-x)/(exp(x+t))
 
 
-def rKutta(x, t, delta):
+def rKutta_for(x, t, delta):
     k1 = delta*func(x, t)
     k2 = delta*func(x+(k1)/2, t + delta/2)
     k3 = delta*func(x+(1/2)*k2, t + delta/2)
@@ -31,38 +28,39 @@ def rKutta(x, t, delta):
     return x + (k1 + 2*k2 + 2*k3 + k4)/6
 
 
-'''
-new info is that use directly negative delta
-def r_kutta_rev(x,t, delta):
+
+#new info is that use directly negative delta
+
+def rKutta_rev(x,t, delta):
     k1 = delta*func(x,t)
-    k2 = delta*func(x + (k1)/2, t + delta/2)
-    k3 = delta*func(x + (1/2)*k2, t + delta/2)
-    k4 = delta*func(x + k3, t + delta)
+    k2 = delta*func(x + (k1)/2, t - delta/2)
+    k3 = delta*func(x + (1/2)*k2, t - delta/2)
+    k4 = delta*func(x + k3, t - delta)
     
     return x + (k1 + 2*k2 + 2*k3 + k4)/6
-'''
+
 # will find the values till t = 5
 
 
-def solve(initial_x, initial_t, final_t, delta, rev = False, verbose = False):
+def solve(initial_x, initial_t, final_t, delta, verbose = False):
     x = [initial_x]
     t = [initial_t]
-    initial_rev_t = initial_t
 
     while initial_t < final_t:
-        new = rKutta(x[-1], initial_t, delta)
+        new = rKutta_for(x[-1], initial_t, delta)
         x.append(new)
         t.append(initial_t+delta)
 
-        if float(f'{initial_t:.2f}') % 1 == 0:
+        if float(f'{initial_t:.2f}') % 1 == 0 and verbose==True:
             print(f'Solving for t = {initial_t:.2f} and found value of x = {new:.3f}')
         initial_t += delta
-    
+    '''
+    Sorry to say i am unable to make reverse part of this
     if rev == True:
         x_rev = [initial_x]
         t_rev = [initial_rev_t]
         while initial_rev_t > -final_t:
-            new_rev = rKutta(x[-1], initial_rev_t, -delta)
+            new_rev = rKutta_rev(x[-1], initial_rev_t, delta)
             x_rev.append(new_rev)
             t_rev.append(initial_rev_t-delta)
 
@@ -76,12 +74,12 @@ def solve(initial_x, initial_t, final_t, delta, rev = False, verbose = False):
         t.reverse()
         t.extend(t_rev)
         t.reverse()
-    
+    '''
     return x , t
 
 
 def main():
-    x,t = solve(1,0,5,0.1,rev=False, verbose=True)
+    x,t = solve(1,0,2,0.1,verbose=True)
     plt.scatter(t,x)
     plt.show()
 
