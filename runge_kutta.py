@@ -5,6 +5,15 @@
 # in this question intial condition is x(0) = 1, therefor
 # for t = 0, we have x = 1
 
+#question changed to different equation, which was looking sexy
+'''
+Rev = True is used for plotting graph till negative final_t
+whereas final_t is value until which we want to solve using rKutta
+
+verbose = Truewill output results of each iteration with values of x
+and t at that iteration
+'''
+
 import matplotlib.pyplot as plt
 from math import exp
 
@@ -38,6 +47,7 @@ def r_kutta_rev(x,t, delta):
 def solve(initial_x, initial_t, final_t, delta, rev = False, verbose = False):
     x = [initial_x]
     t = [initial_t]
+    initial_rev_t = initial_t
 
     while initial_t < final_t:
         new = rKutta(x[-1], initial_t, delta)
@@ -50,15 +60,15 @@ def solve(initial_x, initial_t, final_t, delta, rev = False, verbose = False):
     
     if rev == True:
         x_rev = [initial_x]
-        t_rev = [initial_t]
-        while initial_t > -final_t:
-            new_rev = rKutta(x[-1], initial_t, -delta)
+        t_rev = [initial_rev_t]
+        while initial_rev_t > -final_t:
+            new_rev = rKutta(x[-1], initial_rev_t, -delta)
             x_rev.append(new_rev)
-            t_rev.append(initial_t-delta)
+            t_rev.append(initial_rev_t-delta)
 
-            if float(f'{initial_t:.2f}') % 1 == 0 and verbose == True:
-                print(f'Solving for t = {initial_t:.2f} and found value of x = {new:.3f}')
-            initial_t = initial_t - delta
+            if float(f'{initial_rev_t:.2f}') % 1 == 0 and verbose == True:
+                print(f'Solving for t = {initial_rev_t:.2f} and found value of x = {new_rev:.3f}')
+            initial_rev_t = initial_rev_t - delta
         
         x.reverse()
         x.extend(x_rev)
@@ -71,7 +81,7 @@ def solve(initial_x, initial_t, final_t, delta, rev = False, verbose = False):
 
 
 def main():
-    x,t = solve(1,0,5,0.1,rev=True)
+    x,t = solve(1,0,5,0.1,rev=False, verbose=True)
     plt.scatter(t,x)
     plt.show()
 
