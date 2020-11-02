@@ -16,7 +16,7 @@ from math import exp
 
 
 def func(x, t):
-    return (5*t**2-x)/(exp(x+t))
+    return 10*(x+t)**2
 
 
 def rKutta_for(x, t, delta):
@@ -30,7 +30,7 @@ def rKutta_for(x, t, delta):
 
 
 #new info is that use directly negative delta
-
+'''
 def rKutta_rev(x,t, delta):
     k1 = delta*func(x,t)
     k2 = delta*func(x + (k1)/2, t - delta/2)
@@ -38,7 +38,7 @@ def rKutta_rev(x,t, delta):
     k4 = delta*func(x + k3, t - delta)
     
     return x + (k1 + 2*k2 + 2*k3 + k4)/6
-
+'''
 # will find the values till t = 5
 
 
@@ -79,7 +79,7 @@ def solve(initial_x, initial_t, final_t, delta, verbose = False):
 
 
 def main():
-    x,t = solve(1,0,2,0.1,verbose=True)
+    x,t = solve(-1,0,1.1,0.01,verbose=True)
     plt.scatter(t,x)
     plt.show()
 
