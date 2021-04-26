@@ -1,2 +1,2 @@
 # python
-study related coding. mainly physics
+Utility code parts, written in python here. Little bit of random practicing also.
